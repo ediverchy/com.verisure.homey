@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verisure — Réglages</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:     #C8102E;
+      --red-dim: #8a0b1f;
+      --ink:     #0f0f0f;
+      --ink-2:   #3a3a3a;
+      --ink-3:   #8a8a8a;
+      --surface: #f7f6f4;
+      --white:   #ffffff;
+      --border:  #e2e0db;
+      --green:   #0a6640;
+      --green-bg:#ecfdf3;
+      --amber:   #92400e;
+      --amber-bg:#fffbeb;
+      --radius:  10px;
+      --mono:    'DM Mono', monospace;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      background: var(--surface);
+      padding: 1.5rem 1.25rem 2.5rem;
+      -webkit-font-smoothing: antialiased;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── Section ── */
+    .section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .section-head {
+      padding: 0.9rem 1.1rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section-icon svg { width: 14px; height: 14px; }
+    .icon-red   { background: #fef2f4; }
+    .icon-red svg { fill: var(--red); }
+    .icon-gray  { background: #f1f0ec; }
+    .icon-gray svg { fill: var(--ink-2); }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .section-body { padding: 0; }
+
+    /* ── Row ── */
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+
+    .row:last-child { border-bottom: none; }
+
+    .row-label {
+      font-size: 13.5px;
+      color: var(--ink);
+      flex: 1;
+    }
+
+    .row-hint {
+      font-size: 11.5px;
+      color: var(--ink-3);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    .row-value {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--ink-2);
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ── Interval picker ── */
+    .interval-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .interval-input {
+      width: 56px;
+      height: 34px;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .interval-input:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(200,16,46,0.1);
+    }
+
+    .interval-unit {
+      font-size: 12px;
+      color: var(--ink-3);
+    }
+
+    /* ── Status badge ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-weight: 500;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .badge-green { background: var(--green-bg); color: var(--green); }
+    .badge-green .badge-dot { background: var(--green); }
+    .badge-amber { background: var(--amber-bg); color: var(--amber); }
+    .badge-amber .badge-dot { background: #f59e0b; }
+    .badge-red   { background: #fff5f6; color: var(--red); }
+    .badge-red .badge-dot { background: var(--red); }
+
+    /* ── Bouton ── */
+    .btn {
+      height: 34px;
+      padding: 0 14px;
+      border-radius: 8px;
+      font-family: var(--sans);
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink-2);
+      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:hover { background: var(--border); }
+
+    .btn-danger {
+      border-color: #f5c0c8;
+      background: #fff5f6;
+      color: var(--red);
+    }
+
+    .btn-danger:hover { background: #ffe8ec; }
+
+    .btn-primary {
+      border-color: var(--red);
+      background: var(--red);
+      color: white;
+    }
+
+    .btn-primary:hover { background: var(--red-dim); border-color: var(--red-dim); }
+
+    /* ── Save feedback ── */
+    .save-feedback {
+      font-size: 12px;
+      color: var(--green);
+      opacity: 0;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+    }
+
+    .save-feedback.visible { opacity: 1; }
+
+    /* ── Header page ── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+      padding-top: 0.25rem;
+    }
+
+    .page-logo {
+      width: 36px;
+      height: 36px;
+      background: var(--red);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-logo svg { width: 20px; height: 20px; fill: white; }
+
+    .page-title {
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+
+    .page-sub {
+      font-size: 12px;
+      color: var(--ink-3);
+    }
+
+    /* ── Confirm overlay ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .overlay.visible { display: flex; }
+
+    .confirm-sheet {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 1.25rem 1.25rem 1rem;
+      width: 100%;
+      max-width: 380px;
+      animation: slideUp 0.22s ease both;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    .confirm-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+    .confirm-body  { font-size: 13px; color: var(--ink-3); line-height: 1.5; margin-bottom: 1rem; }
+    .confirm-actions { display: flex; gap: 8px; }
+    .confirm-actions .btn { flex: 1; height: 40px; font-size: 13px; }
+
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <div class="page-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5L12 1zm0 4l5 2.18V11c0 3.5-2.33 6.79-5 7.93-2.67-1.14-5-4.43-5-7.93V7.18L12 5z"/></svg>
+    </div>
+    <div>
+      <div class="page-title">Verisure</div>
+      <div class="page-sub">Réglages de l'app</div>
+    </div>
+  </div>
+
+  <!-- Section : Statut -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-icon icon-red">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+      </div>
+      <span class="section-title">Statut de la connexion</span>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div>
+          <div class="row-label">Session Verisure</div>
+          <div class="row-hint">Dernière actualisation réussie</div>
+        </div>
+        <span class="badge badge-green" id="session-badge">
+          <span class="badge-dot"></span>
+          <span id="session-label">Connecté</span>
+        </span>
+      </div>
+      <div class="row">
+        <div>
+          <div class="row-label">Capteurs couplés</div>
+        </div>
+        <span class="row-value" id="sensor-count">—</span>
+      </div>
+      <div class="row">
+        <div>
+          <div class="row-label">Dernier poll</div>
+        </div>
+        <span class="row-value" id="last-poll">—</span>
+      </div>
+      <div class="row">
+        <div>
+          <div class="row-label">État alarme</div>
+        </div>
+        <span class="badge" id="alarm-badge"><span class="badge-dot"></span><span id="alarm-label">—</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section : Polling -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-icon icon-gray">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm.5 5v6.25l5.5 3.27-.75 1.23L11 14V7h1.5z"/></svg>
+      </div>
+      <span class="section-title">Intervalle de mise à jour</span>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div>
+          <div class="row-label">Fréquence de polling</div>
+          <div class="row-hint">5 min minimum recommandé. Valeur trop basse peut entraîner un blocage IP par Verisure.</div>
+        </div>
+        <div class="interval-wrap">
+          <input class="interval-input" type="number" id="poll-interval"
+                 min="5" max="60" value="10" />
+          <span class="interval-unit">min</span>
+        </div>
+      </div>
+      <div class="row" style="justify-content: flex-end; gap: 10px; padding-top: 0.6rem; padding-bottom: 0.8rem;">
+        <span class="save-feedback" id="save-feedback">Enregistré ✓</span>
+        <button class="btn btn-primary" onclick="saveInterval()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section : Compte -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-icon icon-gray">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z"/></svg>
+      </div>
+      <span class="section-title">Compte</span>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div>
+          <div class="row-label">Adresse email</div>
+        </div>
+        <span class="row-value" id="account-email">—</span>
+      </div>
+      <div class="row">
+        <div>
+          <div class="row-label">Déconnecter le compte</div>
+          <div class="row-hint">Supprime la session et arrête le polling.</div>
+        </div>
+        <button class="btn btn-danger" onclick="confirmDisconnect()">Déconnecter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation déconnexion -->
+  <div class="overlay" id="confirm-overlay">
+    <div class="confirm-sheet">
+      <div class="confirm-title">Déconnecter le compte ?</div>
+      <div class="confirm-body">
+        La session Verisure sera supprimée. Les capteurs couplés ne seront plus mis à jour tant que vous ne reconnectez pas l'app.
+      </div>
+      <div class="confirm-actions">
+        <button class="btn" onclick="closeConfirm()">Annuler</button>
+        <button class="btn btn-danger" onclick="disconnect()">Déconnecter</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ── Homey settings API ────────────────────────────────────────────────
+  // Homey injecte l'objet `HomeyReady` et `Homey` dans les vues settings
+  if (typeof HomeyReady !== 'undefined') HomeyReady();
+
+  // ── Chargement initial ────────────────────────────────────────────────
+
+  async function loadSettings() {
+    try {
+      // Intervalle polling
+      const interval = await Homey.get('poll_interval_min');
+      if (interval) {
+        document.getElementById('poll-interval').value = interval;
+      }
+
+      // Email du compte
+      const email = await Homey.get('verisure_email');
+      document.getElementById('account-email').textContent = email || '—';
+
+      // Statut session
+      const cookies = await Homey.get('verisure_cookies');
+      setSessionBadge(!!cookies);
+
+      // Dernier poll (timestamp)
+      const lastPollTs = await Homey.get('verisure_last_poll_ts');
+      if (lastPollTs) {
+        document.getElementById('last-poll').textContent = formatRelative(lastPollTs);
+      }
+
+      // État alarme
+      const armState = await Homey.get('verisure_last_arm_state');
+      setAlarmBadge(armState);
+
+      // Nombre de capteurs (via nombre de devices couplés)
+      const sensorCount = await Homey.get('verisure_sensor_count');
+      document.getElementById('sensor-count').textContent =
+        sensorCount != null ? `${sensorCount} capteur(s)` : '—';
+
+    } catch (err) {
+      console.error('loadSettings error:', err);
+    }
+  }
+
+  // ── Badge session ─────────────────────────────────────────────────────
+
+  function setSessionBadge(connected) {
+    const badge = document.getElementById('session-badge');
+    const label = document.getElementById('session-label');
+    badge.className = 'badge ' + (connected ? 'badge-green' : 'badge-red');
+    label.textContent = connected ? 'Connecté' : 'Non connecté';
+  }
+
+  // ── Badge alarme ──────────────────────────────────────────────────────
+
+  function setAlarmBadge(statusType) {
+    const badge = document.getElementById('alarm-badge');
+    const label = document.getElementById('alarm-label');
+
+    const map = {
+      ARMED_AWAY:  { cls: 'badge-red',   txt: 'Armée (total)' },
+      ARMED_HOME:  { cls: 'badge-amber', txt: 'Armée (partielle)' },
+      DISARMED:    { cls: 'badge-green', txt: 'Désarmée' },
+    };
+
+    const info = (statusType && map[statusType]) || { cls: 'badge-amber', txt: '—' };
+    badge.className = 'badge ' + info.cls;
+    label.textContent = info.txt;
+  }
+
+  // ── Sauvegarde intervalle ─────────────────────────────────────────────
+
+  async function saveInterval() {
+    const raw = parseInt(document.getElementById('poll-interval').value, 10);
+    const val = Math.min(60, Math.max(5, isNaN(raw) ? 10 : raw));
+
+    document.getElementById('poll-interval').value = val;
+
+    try {
+      await Homey.set('poll_interval_min', val);
+      flashSave();
+    } catch (err) {
+      console.error('saveInterval error:', err);
+    }
+  }
+
+  function flashSave() {
+    const el = document.getElementById('save-feedback');
+    el.classList.add('visible');
+    setTimeout(() => el.classList.remove('visible'), 2000);
+  }
+
+  // ── Déconnexion ───────────────────────────────────────────────────────
+
+  function confirmDisconnect() {
+    document.getElementById('confirm-overlay').classList.add('visible');
+  }
+
+  function closeConfirm() {
+    document.getElementById('confirm-overlay').classList.remove('visible');
+  }
+
+  async function disconnect() {
+    closeConfirm();
+    try {
+      await Homey.set('verisure_cookies', null);
+      await Homey.set('verisure_email', null);
+      await Homey.set('verisure_session_at', null);
+      setSessionBadge(false);
+      document.getElementById('account-email').textContent = '—';
+    } catch (err) {
+      console.error('disconnect error:', err);
+    }
+  }
+
+  // ── Utilitaire date ───────────────────────────────────────────────────
+
+  function formatRelative(ts) {
+    const diff = Math.floor((Date.now() - ts) / 1000);
+    if (diff < 60)   return 'À l\'instant';
+    if (diff < 3600) return `Il y a ${Math.floor(diff / 60)} min`;
+    if (diff < 86400) return `Il y a ${Math.floor(diff / 3600)} h`;
+    return new Date(ts).toLocaleDateString('fr-FR');
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────
+  loadSettings();
+
+  // Rafraîchir "dernier poll" toutes les minutes
+  setInterval(async () => {
+    const ts = await Homey.get('verisure_last_poll_ts').catch(() => null);
+    if (ts) document.getElementById('last-poll').textContent = formatRelative(ts);
+  }, 60 * 1000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,334 @@
+{
+  "id": "com.verisure.homey",
+  "version": "1.0.0",
+  "compatibility": ">=12.0.0",
+  "sdk": 3,
+  "name": {
+    "en": "Verisure",
+    "fr": "Verisure"
+  },
+  "description": {
+    "en": "Integrate your Verisure France alarm system with Homey",
+    "fr": "Intégrez votre alarme Verisure France avec Homey"
+  },
+  "category": ["security"],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Your Name",
+    "email": "your@email.com"
+  },
+  "bugs": {
+    "url": "https://github.com/yourname/com.verisure.homey/issues"
+  },
+  "source": "https://github.com/yourname/com.verisure.homey",
+  "homepage": "https://github.com/yourname/com.verisure.homey",
+
+  "flow": {
+    "triggers": [
+      {
+        "id": "contact_opened",
+        "title": {
+          "en": "A contact sensor opened",
+          "fr": "Un capteur de contact s'est ouvert"
+        },
+        "hint": {
+          "en": "Triggered when a door or window sensor changes to open.",
+          "fr": "Déclenché quand un capteur porte/fenêtre passe à l'état ouvert."
+        },
+        "tokens": [
+          {
+            "name": "area",
+            "type": "string",
+            "title": {
+              "en": "Area",
+              "fr": "Zone"
+            },
+            "example": {
+              "en": "Front door",
+              "fr": "Porte d'entrée"
+            }
+          },
+          {
+            "name": "device",
+            "type": "string",
+            "title": {
+              "en": "Device name",
+              "fr": "Nom du capteur"
+            },
+            "example": {
+              "en": "Front door",
+              "fr": "Porte d'entrée"
+            }
+          }
+        ],
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=contact-sensor"
+          }
+        ]
+      },
+      {
+        "id": "contact_closed",
+        "title": {
+          "en": "A contact sensor closed",
+          "fr": "Un capteur de contact s'est fermé"
+        },
+        "hint": {
+          "en": "Triggered when a door or window sensor changes to closed.",
+          "fr": "Déclenché quand un capteur porte/fenêtre passe à l'état fermé."
+        },
+        "tokens": [
+          {
+            "name": "area",
+            "type": "string",
+            "title": {
+              "en": "Area",
+              "fr": "Zone"
+            },
+            "example": {
+              "en": "Front door",
+              "fr": "Porte d'entrée"
+            }
+          },
+          {
+            "name": "device",
+            "type": "string",
+            "title": {
+              "en": "Device name",
+              "fr": "Nom du capteur"
+            },
+            "example": {
+              "en": "Front door",
+              "fr": "Porte d'entrée"
+            }
+          }
+        ],
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=contact-sensor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_triggered",
+        "title": {
+          "en": "Alarm was triggered",
+          "fr": "L'alarme a été déclenchée"
+        },
+        "hint": {
+          "en": "Triggered when the Verisure alarm goes off.",
+          "fr": "Déclenché quand l'alarme Verisure se déclenche."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=alarm-panel"
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "is_alarm_armed",
+        "title": {
+          "en": "Alarm is !{{armed|disarmed}}",
+          "fr": "L'alarme est !{{armée|désarmée}}"
+        },
+        "hint": {
+          "en": "Checks whether the Verisure alarm is currently armed (away or home).",
+          "fr": "Vérifie si l'alarme Verisure est actuellement armée (totale ou partielle)."
+        },
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=alarm-panel"
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "refresh_now",
+        "title": {
+          "en": "Refresh Verisure sensors now",
+          "fr": "Rafraîchir les capteurs Verisure maintenant"
+        },
+        "hint": {
+          "en": "Forces an immediate poll of the Verisure cloud API instead of waiting for the next scheduled interval.",
+          "fr": "Force une actualisation immédiate de l'API Verisure sans attendre l'intervalle planifié."
+        }
+      }
+    ]
+  },
+
+  "drivers": [
+    {
+      "id": "contact-sensor",
+      "name": {
+        "en": "Door / Window sensor",
+        "fr": "Capteur porte / fenêtre"
+      },
+      "class": "sensor",
+      "capabilities": ["alarm_contact", "alarm_tamper"],
+      "capabilitiesOptions": {
+        "alarm_contact": {
+          "title": {
+            "en": "Open",
+            "fr": "Ouvert"
+          }
+        },
+        "alarm_tamper": {
+          "title": {
+            "en": "Tamper alert",
+            "fr": "Alerte sabotage"
+          }
+        }
+      },
+      "energy": {
+        "batteries": ["INTERNAL"]
+      },
+      "images": {
+        "small": "/drivers/contact-sensor/assets/images/small.png",
+        "large": "/drivers/contact-sensor/assets/images/large.png",
+        "xlarge": "/drivers/contact-sensor/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "start",
+          "template": "login_credentials",
+          "options": {
+            "logo": "/assets/images/logo.svg",
+            "usernameLabel": {
+              "en": "Email address",
+              "fr": "Adresse email"
+            },
+            "usernamePlaceholder": {
+              "en": "your@email.com",
+              "fr": "votre@email.com"
+            },
+            "passwordLabel": {
+              "en": "Password",
+              "fr": "Mot de passe"
+            }
+          }
+        },
+        {
+          "id": "mfa",
+          "navigation": {
+            "next": "list_devices"
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "deviceLabel",
+          "type": "label",
+          "label": {
+            "en": "Device label (Verisure ID)",
+            "fr": "Identifiant Verisure"
+          },
+          "value": ""
+        },
+        {
+          "id": "area",
+          "type": "label",
+          "label": {
+            "en": "Area",
+            "fr": "Zone"
+          },
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "alarm-panel",
+      "name": {
+        "en": "Alarm panel",
+        "fr": "Centrale d'alarme"
+      },
+      "class": "homealarm",
+      "capabilities": ["homealarm_state", "alarm_generic"],
+      "capabilitiesOptions": {
+        "alarm_generic": {
+          "title": {
+            "en": "Alarm triggered",
+            "fr": "Alarme déclenchée"
+          }
+        }
+      },
+      "images": {
+        "small": "/drivers/alarm-panel/assets/images/small.png",
+        "large": "/drivers/alarm-panel/assets/images/large.png",
+        "xlarge": "/drivers/alarm-panel/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "id": "giid",
+          "type": "label",
+          "label": {
+            "en": "Installation ID (giid)",
+            "fr": "ID installation (giid)"
+          },
+          "value": ""
+        }
+      ]
+    }
+  ],
+
+  "settings": [
+    {
+      "id": "poll_interval_min",
+      "type": "number",
+      "label": {
+        "en": "Polling interval (minutes)",
+        "fr": "Intervalle de mise à jour (minutes)"
+      },
+      "hint": {
+        "en": "How often to query the Verisure cloud. Minimum 5 minutes recommended to avoid rate limiting.",
+        "fr": "Fréquence d'interrogation du cloud Verisure. 5 minutes minimum recommandé pour éviter le blocage."
+      },
+      "value": 10,
+      "min": 5,
+      "max": 60,
+      "units": {
+        "en": "min",
+        "fr": "min"
+      }
+    }
+  ]
+}
